@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wekan
+  labels:
+    app: wekan
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: wekan
+  template:
+    metadata:
+      labels:
+        app: wekan
+    spec:
+      containers:
+      - image: wekanteam/wekan:v6.18
+        name: wekan
+        ports:
+        - containerPort: 8080
+          name: wekan
+        env:
+          - name: MONGO_URL
+            valueFrom:
+              secretKeyRef:
+                name: secret-wekan
+                key: MONGO_URL
+          - name: PORT
+            value: "8080"
+          - name: ROOT_URL
+            value: https://wekan.roldyx.duckdns.org
